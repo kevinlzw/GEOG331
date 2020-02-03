@@ -41,6 +41,25 @@ datW$dateF <- as.Date(datW$DATE, "%Y-%m-%d")
 datW$year <- as.numeric(format(datW$dateF,"%Y"))
 
 
+#Q2
+
+#an example of character vector
+character_vector <- c("ab", "food", "water", "tired", "AB")
+class(character_vector)
+
+#an example of numeric vector
+numeric_vector <- c(1, -0.2, 999, 0.55, -50)
+class(numeric_vector)
+
+#an example of integer vector
+integer_vector <- c(1L, -2L, 999L, 55L, -50L)
+class(integer_vector)
+
+#an example of factor
+
+factor_example <- factor(c("banana", "banana", "apple", "apple"))
+class(factor_example)
+
 #find out all unique site names
 levels(datW$NAME)
 
