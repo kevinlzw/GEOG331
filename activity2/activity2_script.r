@@ -56,7 +56,6 @@ integer_vector <- c(1L, -2L, 999L, 55L, -50L)
 class(integer_vector)
 
 #an example of factor
-
 factor_example <- factor(c("banana", "banana", "apple", "apple"))
 class(factor_example)
 
@@ -91,7 +90,11 @@ averageTemp
 #you will have to reference the level output or look at the row of data to see the character designation.
 datW$siteN <- as.numeric(datW$NAME)
 
-#add four histograms to the same window
+
+#Q4
+
+#add four histograms to the same window, first we initialize
+par(mar=c(1,1,1,1))
 par(mfrow=c(2,2))
 
 
@@ -199,6 +202,8 @@ abline(v = mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE) + sd(datW$TAVE[datW$siteN
        lwd = 3)
 
 
+
+
 #make a histogram for the first site in our levels
 #main= is the title name argument.
 #Here you want to paste the actual name of the factor not the numeric index
@@ -263,5 +268,49 @@ qnorm(0.95,
       sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
 
 
+#Q6
+
+#pnorm of 18.51026 gives me all probability below 18.51026
+#subtracting from one leaves me with the area above 18.51026
+1 - pnorm(18.51026, mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE) + 4,
+          sd(datW$TAVE[datW$siteN == 1],na.rm=TRUE))
 
 
+#Q7
+
+#make a histogram of daily precipitation for Aberdeen. 
+par(mar=c(1,1,1,1))
+hist(datW$PRCP[datW$siteN == 1],
+     freq=FALSE, 
+     main = paste(levels(datW$NAME)[1]),
+     xlab = "Average daily precipitation", 
+     ylab="Relative frequency",
+     col="grey50",
+     border="white")
+
+
+#Q8
+
+
+SumPRCP <- aggregate(datW$PRCP, by=list(datW$NAME, datW$year), FUN="sum",na.rm=TRUE)
+SumPRCP
+
+colnames(SumPRCP) <- c("NAME","year", "PRCP")
+SumPRCP
+
+hist(SumPRCP$PRCP[SumPRCP$NAME == "ABERDEEN, WA US"],
+     freq=FALSE, 
+     main = paste(levels(datW$NAME)[1]),
+     xlab = "Annual precipitation", 
+     ylab="Relative frequency",
+     col="grey50",
+     border="white")
+
+
+#Q9
+
+mean_annual <- aggregate(datW$PRCP, by=list(datW$NAME), FUN="mean",na.rm=TRUE)
+colnames(mean_annual) <- c("NAME","PRCP")
+mean_annual
+
+averageTemp
