@@ -290,13 +290,12 @@ hist(datW$PRCP[datW$siteN == 1],
 
 #Q8
 
-
 SumPRCP <- aggregate(datW$PRCP, by=list(datW$NAME, datW$year), FUN="sum",na.rm=TRUE)
-SumPRCP
 
 colnames(SumPRCP) <- c("NAME","year", "PRCP")
 SumPRCP
 
+#histogram of annual precipitation at ABERDEEN, WA US.
 hist(SumPRCP$PRCP[SumPRCP$NAME == "ABERDEEN, WA US"],
      freq=FALSE, 
      main = paste(levels(datW$NAME)[1]),
@@ -308,6 +307,7 @@ hist(SumPRCP$PRCP[SumPRCP$NAME == "ABERDEEN, WA US"],
 
 #Q9
 
+#calculate mean of the annual precipitation for all sites
 mean_annual <- aggregate(datW$PRCP, by=list(datW$NAME), FUN="mean",na.rm=TRUE)
 colnames(mean_annual) <- c("NAME","PRCP")
 
