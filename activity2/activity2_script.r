@@ -202,8 +202,8 @@ abline(v = mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE) + sd(datW$TAVE[datW$siteN
        lwd = 3)
 
 
-
-
+par(mar=c(5.1,4.1,4.1,2.1))
+par(mfrow=c(1,1))
 #make a histogram for the first site in our levels
 #main= is the title name argument.
 #Here you want to paste the actual name of the factor not the numeric index
@@ -279,7 +279,6 @@ qnorm(0.95,
 #Q7
 
 #make a histogram of daily precipitation for Aberdeen. 
-par(mar=c(1,1,1,1))
 hist(datW$PRCP[datW$siteN == 1],
      freq=FALSE, 
      main = paste(levels(datW$NAME)[1]),
@@ -311,6 +310,6 @@ hist(SumPRCP$PRCP[SumPRCP$NAME == "ABERDEEN, WA US"],
 
 mean_annual <- aggregate(datW$PRCP, by=list(datW$NAME), FUN="mean",na.rm=TRUE)
 colnames(mean_annual) <- c("NAME","PRCP")
-mean_annual
 
+mean_annual
 averageTemp
