@@ -161,6 +161,19 @@ plot(datW$DD, datW$wind.speedQ1, pch=19, type="b", xlab = "Day of Year",
 #####Q7 & Q9#####
 #####################################
 
+#check the quantile for soil moisture
+quantile(datW$soil.moisture, na.rm = TRUE)
+
+#check the quantile for soil temperature
+quantile(datW$soil.temp, na.rm = TRUE)
+
+#look at days with really low soil temperature
+datW[datW$soil.temp < 10,]  
+
+#look at days with really high soil temperature
+datW[datW$soil.temp > 24,]  
+
+
 #the first day of soil sensor outage. 
 min(datW$DD[is.na(datW$soil.moisture)])
 
@@ -171,8 +184,6 @@ plot(datW$DD, datW$soil.moisture, pch=19, type="b", xlab = "Day of Year",
 
 plot(datW$DD, datW$precipitation, pch=19, type="b", xlab = "Day of Year",
      ylab="Precipitation")
-
-
 
 plot(datW$DD, datW$air.tempQ2, pch=19, type="b", xlab = "Day of Year",
      ylab="Air Temperature")
