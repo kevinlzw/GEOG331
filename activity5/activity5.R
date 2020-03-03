@@ -47,8 +47,8 @@ datP$hour <- hour(dateP ) + (minute(dateP )/60)
 #get full decimal time
 datP$decDay <- datP$doy + (datP$hour/24)
 #calculate a decimal year, but account for leap year
-datP$decYear <- ifelse(leap_year(datP$year),datP$year + (datP$decDay-1/366),
-                       datP$year + (datP$decDay-1/365))        
+datP$decYear <- ifelse(leap_year(datP$year),datP$year + ((datP$decDay-1)/366),
+                       datP$year + ((datP$decDay-1)/365))        
 
 #plot discharge
 plot(datD$decYear, datD$discharge, type="l", xlab="Year", ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
