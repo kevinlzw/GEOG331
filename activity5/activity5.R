@@ -47,11 +47,16 @@ datP$hour <- hour(dateP ) + (minute(dateP )/60)
 #get full decimal time
 datP$decDay <- datP$doy + (datP$hour/24)
 #calculate a decimal year, but account for leap year
-datP$decYear <- ifelse(leap_year(datP$year),datP$year + (datP$decDay/366),
-                       datP$year + (datP$decDay/365))        
+datP$decYear <- ifelse(leap_year(datP$year),datP$year + (datP$decDay-1/366),
+                       datP$year + (datP$decDay-1/365))        
 
 #plot discharge
 plot(datD$decYear, datD$discharge, type="l", xlab="Year", ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")))
+
+
+#####################################
+#####Q3#####
+#####################################
 
 length(datD$decYear)
 
@@ -64,6 +69,10 @@ colnames(aveF) <- c("doy","dailyAve")
 sdF <- aggregate(datD$discharge, by=list(datD$doy), FUN="sd")
 colnames(sdF) <- c("doy","dailySD")
 
+#####################################
+#####Q5#####
+#####################################
+
 #start new plot
 dev.new(width=8,height=8)
 #bigger margins
@@ -74,7 +83,7 @@ plot(aveF$doy,aveF$dailyAve,
      xlab="Month", 
      ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
      lwd=2,
-     ylim=c(0,90),
+     ylim=c(0,180),
      xaxs="i", yaxs ="i",#remove gaps from axes
      axes=FALSE)#no axes
 lines(datD$doy[datD$year == 2017], datD$discharge[datD$year == 2017], col = "red")
@@ -83,10 +92,10 @@ polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
         col=rgb(0.392, 0.584, 0.929,.2), #color that is semi-transparent
         border=NA#no border
 )       
-axis(1, seq(0,360, by=30), #tick intervals
-     lab=seq(0,12, by=1)) #tick labels
-axis(2, seq(0,80, by=20),
-     seq(0,80, by=20),
+axis(1, c(1, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365), #tick intervals
+     lab=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "End")) #tick labels
+axis(2, seq(0,150, by=30),
+     seq(0,150, by=30),
      las = 2)#show ticks at 90 degree angle
 legend("topright", c("mean","1 standard deviation", "2017"), #legend items
        lwd=c(2,NA),#lines
@@ -95,17 +104,41 @@ legend("topright", c("mean","1 standard deviation", "2017"), #legend items
        bty="n")#no legend border
 
 
+#####################################
+#####Q7#####
+#####################################
 
-fullpremeasure <- datP %>% 
-        group_by(doy, year) %>%
-        summarise(Count = n())
+pmeasure <- aggregate(datP$HPCP, by=list(datP$doy, datP$year), FUN="length")
 
+pmeasure24 <- pmeasure[which(pmeasure$x == 24), ]
 
-fullpremeasure <- subset(fullpremeasure, Count == 24)
+colnames(pmeasure24) <- c("doy", "year")
 
-avgD <- aggregate(datD$discharge, by=list(datD$doy, datD$year), FUN="mean")
-colnames(aveF) <- c("doy","dailyAve")
+pmeasure24$decYear <- ifelse(leap_year(pmeasure24$year),pmeasure24$year + ((pmeasure24$doy-1)/366),
+                             pmeasure24$year + ((pmeasure24$doy-1)/365))
 
+dev.new(width=8,height=8)
+#bigger margins
+par(mai=c(1,1,1,1))
+#make plot
+plot(datD$decYear,datD$discharge, 
+     type="l", 
+     xlab="Year", 
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
+     lwd=2,
+     ylim=c(0,450),
+     xaxs="i", yaxs ="i",
+     axes=FALSE)
+axis(2, seq(0,400, by=50),
+     seq(0,400, by=50),
+     las = 2)
+axis(1, seq(2007, 2019, by=1), seq(2007, 2019, by=1))
+points(x = pmeasure24$decYear, y = rep(440, nrow(pmeasure24)), pch = 1, col = "red")
+legend("topright", c("Discharge","Days that have all precipitation measurements"), #legend items
+       lwd=c(2,NA),#lines
+       col=c("black", "red"),#colors
+       pch=c(NA,1),#symbols
+       bty="n")#no legend border
 
 
 #subsest discharge and precipitation within range of interest
@@ -144,7 +177,9 @@ for(i in 1:nrow(hydroP)){
 }
 
 
-
+#####################################
+#####Q8#####
+#####################################
 
 
 #subsest discharge and precipitation within range of interest
@@ -152,9 +187,6 @@ hydroDwinter <- datD[datD$doy >= 356 & datD$doy < 358 & datD$year == 2012,]
 hydroPwinter <- datP[datP$doy >= 356 & datP$doy < 358 & datP$year == 2012,]
 
 min(hydroDwinter$discharge)
-
-
-
 
 #get minimum and maximum range of discharge to plot
 #go outside of the range so that it's easy to see high/low values
@@ -198,7 +230,9 @@ ggplot(data= datD, aes(yearPlot,discharge)) +
 ggplot(data= datD, aes(yearPlot,discharge)) + 
         geom_violin()
 
-
+#####################################
+#####Q9#####
+#####################################
 
 datD2016 <- datD[datD$year == 2016,]
 datD2017 <- datD[datD$year == 2017,]
@@ -244,14 +278,11 @@ datD2017$season <- as.factor(season2017)
 
 
 
-
-
 ggplot(datD2016, aes(x=season, y=discharge)) + 
         geom_violin(fill="lightblue",    
                     trim = FALSE,
                     alpha = 0.5, 
                     show.legend = FALSE)+
-        geom_boxplot(width = 0.1, fill="white") + 
         xlab("Season")  + 
         ylab(bquote("Discharge ft"^3~"sec"^-1))    + 
         ggtitle("Discharge on 2016") + 
@@ -263,7 +294,6 @@ ggplot(datD2017, aes(x=season, y=discharge)) +
                     trim = FALSE,
                     alpha = 0.5, 
                     show.legend = FALSE)+
-        geom_boxplot(width = 0.1, fill="white") + 
         xlab("Season")  + 
         ylab(bquote("Discharge ft"^3~"sec"^-1))    + 
         ggtitle("Discharge on 2017") + 
