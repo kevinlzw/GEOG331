@@ -13,12 +13,13 @@ plot(g1966, axes = TRUE)
 g1998 <- readOGR("Y:\\Students\\klian\\a06\\GNPglaciers\\GNPglaciers_1998.shp")
 g2005 <- readOGR("Y:\\Students\\klian\\a06\\GNPglaciers\\GNPglaciers_2005.shp")
 g2015 <- readOGR("Y:\\Students\\klian\\a06\\GNPglaciers\\GNPglaciers_2015.shp")
-g1966@proj4string
 str(g2015)
 #data stores all accompanying info/measurements for each spatial object
 head(g2015@data)
 #polygons stores the coordinates for drawing the polygons
 g2015@polygons[[1]]
+g1966@proj4string
+
 
 spplot(g1966, "GLACNAME")
 
@@ -78,7 +79,14 @@ str(NDVIraster[[1]])
 #get projection
 NDVIraster[[1]]@crs
 
-plot(NDVIraster[[1]])
+#####################################
+#####Q3#####
+#####################################
+par(mfrow=c(1,2))
+plot(NDVIraster[[1]], axes = TRUE)
+plotRGB(rgbL, ext=c(289995,310000,5371253,5400000), stretch="lin", axes = TRUE)
+plot(g1966, col="palegreen2", border=NA, add=TRUE)
+
 
 #reproject the glaciers
 #use the NDVI projection
@@ -87,6 +95,14 @@ g1966p <- spTransform(g1966,NDVIraster[[1]]@crs)
 g1998p <- spTransform(g1998,NDVIraster[[1]]@crs)
 g2005p <- spTransform(g2005,NDVIraster[[1]]@crs)
 g2015p <- spTransform(g2015,NDVIraster[[1]]@crs)
+
+#####################################
+#####Q4#####
+#####################################
+par(mfrow=c(1,1))
+plot(NDVIraster[[13]], axes = FALSE)
+plot(g2015p, border="BLACK", add=TRUE)
+
 
 #calculate area for all polygons
 #add directly into data table for each shapefile
@@ -115,8 +131,36 @@ for(i in 2:39){
   
 }   
 
+#####################################
+#####Q5#####
+#####################################
+g2015p@data$Percent <- ((gAll$a1966m.sq - gAll$a2015m.sq) / gAll$a1966m.sq)
+spplot(g2015p, "Percent")
+
+
 diffPoly <- gDifference(g1966p, g2015p)
 plot(diffPoly)
+
+
+
+#####################################
+#####Q6#####
+#####################################
+
+#subset the glacier with the largest % loss
+gmaxlost1966 <- subset(g1966, g2015p@data$Percent == max(g2015p@data$Percent))
+gmaxlost1998 <- subset(g1998, g2015p@data$Percent == max(g2015p@data$Percent))
+gmaxlost2005 <- subset(g2005, g2015p@data$Percent == max(g2015p@data$Percent))
+gmaxlost2015 <- subset(g2015, g2015p@data$Percent == max(g2015p@data$Percent))
+
+par(mai=c(1,1,1,1))
+plotRGB(rgbL, ext=c(273000,275000,5426000,5429010), stretch="lin", axes=TRUE, main = "Boulder Glacier lost 84.72% of its area from 1966 to 2015")
+#add polygons to plot
+plot(gmaxlost1966, col="tan3", border=NA, add=TRUE)
+plot(gmaxlost1998, col="royalblue3", add=TRUE, border=NA)
+plot(gmaxlost2005, col="darkgoldenrod4", add=TRUE, border=NA)
+plot(gmaxlost2015, col="tomato3", add=TRUE, border=NA)
+
 
 #plot with NDVI
 plot(NDVIraster[[13]], axes=FALSE, box=FALSE)
