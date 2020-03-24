@@ -224,3 +224,15 @@ meanChange <- zonal(NDVIfit, #NDVI function to summarize
                     glacZones,#raster with zones
                     "mean")#function to apply
 head(meanChange)
+
+#####################################
+#####Q9#####
+#####################################
+
+glacRaster2015 <- rasterize(g2015p, NDVIraster[[13]], field=g2015p@data$GLACNAME, background=0)
+
+
+
+meanchange2015 <- zonal(NDVIfit, )
+
+g2015p@data$meanChange <- meanChange
