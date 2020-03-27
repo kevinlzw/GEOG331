@@ -229,10 +229,44 @@ head(meanChange)
 #####Q9#####
 #####################################
 
-glacRaster2015 <- rasterize(g2015p, NDVIraster[[13]], field=g2015p@data$GLACNAME, background=0)
+meanChange <- meanChange[2:40, 1:2]
+g2015p@data$meanChange <- meanChange[,2]
+
+spplot(g2015p, "meanChange")
 
 
+#####################################
+#####Q11#####
+#####################################
 
-meanchange2015 <- zonal(NDVIfit, )
+NDVIavg <- calc(NDVIstack, mean)
 
-g2015p@data$meanChange <- meanChange
+#maximum
+NDVIavg@data@max
+NDVImean <- zonal(NDVIavg, glacZones, "mean")
+NDVImean <- NDVImean[2:40, 1:2]
+g2015p@data$NDVImean <- NDVImean[,2]
+col <- c()
+for(i in 1:length(g2015p@data$NDVImean)){
+  if(g2015p@data$NDVImean[i] <=0.2){
+    col <- c(col, "red")
+  }
+  else if(g2015p@data$NDVImean[i] <=0.4){
+    col <- c(col, "brown")
+  }
+  else if(g2015p@data$NDVImean[i] <=0.6){
+    col <- c(col, "cadetblue")
+  }
+  else if(g2015p@data$NDVImean[i] <=0.8){
+    col <- c(col, "blue")
+  }
+  else if(g2015p@data$NDVImean[i] < 1){
+    col <- c(col, "blue4")
+  }
+}
+g2015p@data$col <- col
+par(mfrow=c(1,1))
+plot(NDVIavg, axes = FALSE)
+plot(g2015p, add=TRUE, col=paste(g2015p@data$col),border=FALSE)
+legend("bottomright", c("mean < 0.2", "mean < 0.4", "mean < 0.6", "mean < 0.8","mean < 1"),
+       col=c("red","brown", "cadetblue","blue","blue4"), pch=c(NA,15))
