@@ -152,14 +152,17 @@ gmaxlost1966 <- subset(g1966, g2015p@data$Percent == max(g2015p@data$Percent))
 gmaxlost1998 <- subset(g1998, g2015p@data$Percent == max(g2015p@data$Percent))
 gmaxlost2005 <- subset(g2005, g2015p@data$Percent == max(g2015p@data$Percent))
 gmaxlost2015 <- subset(g2015, g2015p@data$Percent == max(g2015p@data$Percent))
-
 par(mai=c(1,1,1,1))
-plotRGB(rgbL, ext=c(273000,275000,5426000,5429010), stretch="lin", axes=TRUE, main = "Boulder Glacier lost 84.72% of its area from 1966 to 2015")
+par(xpd=T)
+plotRGB(rgbL, ext=c(273000,275000,5426000,5429010), stretch="lin", axes=TRUE, main = "Boulder Glacier lost 84.72% of its area")
 #add polygons to plot
 plot(gmaxlost1966, col="tan3", border=NA, add=TRUE)
 plot(gmaxlost1998, col="royalblue3", add=TRUE, border=NA)
 plot(gmaxlost2005, col="darkgoldenrod4", add=TRUE, border=NA)
 plot(gmaxlost2015, col="tomato3", add=TRUE, border=NA)
+legend("bottomright", c("1966", "1998", "2005", "2015"),
+       col=c("tan3","royalblue3", "darkgoldenrod4","tomato3"), pch=c(15))
+
 
 
 #plot with NDVI
@@ -251,22 +254,22 @@ for(i in 1:length(g2015p@data$NDVImean)){
   if(g2015p@data$NDVImean[i] <=0.2){
     col <- c(col, "red")
   }
-  else if(g2015p@data$NDVImean[i] <=0.4){
+  else if(g2015p@data$NDVImean[i] > 0.2 & g2015p@data$NDVImean[i] <=0.4){
     col <- c(col, "brown")
   }
-  else if(g2015p@data$NDVImean[i] <=0.6){
+  else if(g2015p@data$NDVImean[i] > 0.4 & g2015p@data$NDVImean[i] <=0.6){
     col <- c(col, "cadetblue")
   }
-  else if(g2015p@data$NDVImean[i] <=0.8){
+  else if(g2015p@data$NDVImean[i] > 0.6 & g2015p@data$NDVImean[i] <=0.8){
     col <- c(col, "blue")
   }
-  else if(g2015p@data$NDVImean[i] < 1){
+  else if(g2015p@data$NDVImean[i] > 0.8 & g2015p@data$NDVImean[i] < 1){
     col <- c(col, "blue4")
   }
 }
+par(mai= c(0.5, 0.5, 0.5, 0.5))
 g2015p@data$col <- col
-par(mfrow=c(1,1))
-plot(NDVIavg, axes = FALSE)
+plot(NDVIavg, axes = FALSE, ext =c(-110000,0,20000,120000))
 plot(g2015p, add=TRUE, col=paste(g2015p@data$col),border=FALSE)
-legend("bottomright", c("mean < 0.2", "mean < 0.4", "mean < 0.6", "mean < 0.8","mean < 1"),
-       col=c("red","brown", "cadetblue","blue","blue4"), pch=c(NA,15))
+legend("bottomleft", c("mean < 0.2", "mean < 0.4", "mean < 0.6", "mean < 0.8","mean < 1"),
+       col=c("red","brown", "cadetblue","blue","blue4"), cex = 0.8 ,pch=c(15), bty = "n")
