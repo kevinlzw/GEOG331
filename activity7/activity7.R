@@ -257,3 +257,31 @@ legend("bottomleft", paste(landclass$landcover),
        fill=landclass$cols, bty="n")   
 #add title
 mtext("Neural network", side=3,cex=2, line=-5)
+
+#cell count neural net
+freq(nnet_prediction)
+
+#cell count random forest
+freq(rf_prediction)
+
+
+#####################################
+#####Q5#####
+#####################################
+
+diffprediction <- nnet_prediction - rf_prediction
+
+diffcov <- c("There is difference", "No Difference")
+
+par(mai = c(0, 0, 0, 0))
+
+plot(diffprediction,
+     breaks=c(-5,-0.5, 0.5, 5), 
+     col=c("black", "white", "black") ,
+     legend=FALSE
+,      axes=FALSE)
+legend("bottomleft", paste(diffcov),
+       fill=c("black", "white") ,bty="n")   
+
+ 
+
